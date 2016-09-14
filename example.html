@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>EzPayeezy</title>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"  rel="stylesheet" type="text/css">
+	</head>
+	<body class="container">
+		<h1>EzPayeezy</h1>
+		<p>See the Payeezy site for <a href="https://developer.payeezy.com/payeezy-api/apis/get/securitytokens">full documentation</a> on the FirstData Payeezy API</p>
+		<form method="post">
+			<fieldset>
+				<legend>Credit Card</legend>
+
+				<div class="form-group">
+					<label>Card Number</label>
+					<input class="form-control" type="text" data-payeezy-card="card_number" value="4111111111111111" onkeydown="setType(this.value)">
+					(<a href="https://support.payeezy.com/hc/en-us/articles/204504235-Using-test-credit-card-numbers">Test Card Numbers</a>)
+				</div>
+
+				<div class="form-group">
+					<label>Card Type</label>
+					<input class="form-control" type="input" data-payeezy-card="type" readonly value="Visa">
+					(Automatically Set from card_number)
+				</div>
+
+				<div class="form-group">
+					<label>Cardholder Name</label>
+					<input class="form-control" type="text" data-payeezy-card="cardholder_name" value="John Doe">
+				</div>
+
+				<div class="form-group">
+
+				<div class="form-group">
+					<label>Expiration Date</label>
+					<div class="form-control">
+					<select data-payeezy-card="exp_month">
+						<option value="">Month</option>
+						<option value="01" selected>01 - Jan</option>
+						<option value="02">02 - Feb</option>
+						<option value="03">03 - Mar</option>
+						<option value="04">04 - Apr</option>
+						<option value="05">05 - May</option>
+						<option value="06">06 - Jun</option>
+						<option value="07">07 - Jul</option>
+						<option value="08">08 - Aug</option>
+						<option value="09">09 - Sep</option>
+						<option value="10">10 - Oct</option>
+						<option value="11">11 - Nov</option>
+						<option value="12">12 - Dec</option>
+					</select> / <select data-payeezy-card="exp_year">
+						<option value="">Year</option>
+						<option value="16">2016</option>
+						<option value="17">2017</option>
+						<option value="18">2018</option>
+						<option value="19">2019</option>
+						<option value="20" selected>2020</option>
+						<option value="21">2021</option>
+						<option value="22">2022</option>
+						<option value="23">2023</option>
+						<option value="24">2024</option>
+						<option value="25">2025</option>
+						<option value="26">2026</option>
+						<option value="27">2027</option>
+						<option value="28">2028</option>
+						<option value="29">2029</option>
+						<option value="30">2030</option>
+					</select></div>
+				</div>
+				<div class="form-group">
+					<label>CVV Code</label>
+					<input class="form-control" type="text" min="100" max="9999" data-payeezy-card="cvv" value="123">
+				</div>
+
+			</fieldset>
+
+			<fieldset>
+				<legend>Billing Info</legend>
+				<div class="form-group">
+					<label>Street</label>
+					<input class="form-control" type="text" data-payeezy-billing="street" value="123 Fake Street">
+				</div>
+				<div class="form-group">
+					<label>City</label>
+					<input class="form-control" type="text" data-payeezy-billing="city" value="Springfield">
+				</div>
+				<div class="form-group">
+					<label>State/Province</label>
+					<input class="form-control" type="text" data-payeezy-billing="state_province" value="MA">
+				</div>
+				<div class="form-group">
+					<label>Zip/Postal Code</label>
+					<input class="form-control" type="text" data-payeezy-billing="zip_postal_code" value="01776">
+				</div>
+				<div class="form-group">
+					<label>Country</label>
+					<input class="form-control" type="text" data-payeezy-billing="country" value="US">
+				</div>
+				<div class="form-group">
+					<label>Email</label>
+					<input class="form-control" type="text" data-payeezy-billing="email" value="some@dude.com">
+				</div>
+				<div class="form-group">
+					<label>Phone Type</label>
+					<select data-payeezy-billing="phone.type">
+						<option value="H" selected>Home</option>
+						<option value="W">Work</option>
+						<option value="D">Day</option>
+						<option value="N">Night</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label>Phone Number</label>
+					<input class="form-control" type="text" data-payeezy-billing="phone.number" value="123-123-1234">
+				</div>
+
+			</fieldset>
+
+			<fieldset id="result">
+				<legend>Result</legend>
+				<label>Status</label>
+				<p id="status">n/a</p>
+				<label>Response</label>
+				<pre id="response">n/a</pre>
+			</fieldset>
+
+			<button class="btn btn-primary">Tokenize Card</button>
+		</form>
+		<script src="ez-payeezy.js"></script>
+		<script>
+			EzPayeezy.init({
+				apikey         : 'y6pWAJNyJyjGv66IsVuWnklkKUPFbb0a',
+				js_security_key: 'js-6125e57ce5c46e10087a545b9e9d7354c23e1a1670d9e9c7',
+				ta_token       : 'NOIW',
+				auth           : true,
+				environment    : 'api-cert',
+				currency       : 'USD',
+			});
+
+			function showToken(status, response) {
+				document.getElementById('status').innerText = status;
+				document.getElementById('response').innerText = JSON.stringify(response, null, '  ');
+			}
+
+			function setType(card_number) {
+				document.querySelector('[data-payeezy-card="type"]').value = Payeezy.getCardType(card_number);
+			}
+
+			document.querySelector('form').addEventListener('submit', function(event) {
+				event.preventDefault();
+				EzPayeezy.createToken(showToken);
+			});
+		</script>
+	</body>
+</html>
